@@ -127,3 +127,10 @@ CREATE TABLE public.tblfacilitybooking (
 ALTER TABLE public.tblfacilitybooking ADD CONSTRAINT tblfacilitybooking_fltybookedby_fkey FOREIGN KEY (fltybookedby) REFERENCES public.tblusers(usrid);
 ALTER TABLE public.tblfacilitybooking ADD CONSTRAINT tblfacilitybooking_fltyid_fkey FOREIGN KEY (fltyid) REFERENCES public.tblfacilities(fltyid);
 
+
+alter table  public.tblfacilitybooking add fltyBookingIsCancelled float null, add  fltyBookingCancelledOn timestamp, add fltyBookingCancelledComments varchar(1000);
+
+alter table public.tblusers add usrCreatedOn timestamp, add usrLastUpdatedOn timestamp, add usrComments varchar(1000);
+
+
+
