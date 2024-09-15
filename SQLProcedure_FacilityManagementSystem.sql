@@ -373,7 +373,7 @@ begin
 
 update public.tblroles
 set rolename =updateRoleName 
-where updateRoleid;
+where Roleid=updateRoleid;
 
  
 	
@@ -526,17 +526,289 @@ end;$$;
 
 
 
---PROCEDURE TO UPDATE ATTACHMENTS
 
 
 
 
 
---PROCEDURE TO ACTIVATE ATTACHMENTS
+--PROCEDURE TO INSERT INTO  tblLanguages
+create or replace procedure spInsertToLanguages
+ (
+	newLanName varchar(50) ,
+	newLanDescription varchar(500)  
+)
+ 
+language plpgsql    
+as $$
+begin
+ 
+
+insert into public.tblLanguages
+(
+lanID ,
+lanName ,
+lanDescription ,
+lanIsDeleted
+)
+(
+	select gen_random_uuid(), 
+	newLanName  ,
+	newLanDescription  ,
+	0
+	
+)	;
+	
+    commit;
+end;$$;
 
 
---PROCEDURE TO CONFIRM  BOOKING
 
+--PROCEDURE TO INSERT INTO  tblControls
+
+create or replace procedure spInsertToControls
+ (
+	newCtrName varchar(50) ,
+	newCtrDescription varchar(500)  
+)
+ 
+language plpgsql    
+as $$
+begin
+ 
+
+insert into public.tblControls
+(
+ctrID,
+ctrName ,
+ctrDescription ,
+ctrIsDeleted 
+)
+(
+	select gen_random_uuid(), 
+	newCtrName  ,
+	newCtrDescription  ,
+	0
+	
+)	;
+	
+    commit;
+end;$$;
+
+
+--PROCEDURE TO INSERT INTO  tblControlDisplay
+
+create or replace procedure spInsertToControlsToDisplay
+ (
+	newCtrdspCtrID  uuid,
+	newCtrdsplanID uuid,
+	newCtrdspText varchar(50)
+ 	
+)
+ 
+language plpgsql    
+as $$
+begin
+ 
+
+insert into public.tblControlDisplay
+(
+ctrddspID ,
+ctrdspCtrID ,
+ctrdsplanID,
+ctrdspText ,
+ctrdspIsDeleted 
+
+)
+(
+	select gen_random_uuid(), 
+	newCtrdspCtrID ,
+	newCtrdsplanID,
+	newCtrdspText ,
+	0 
+	
+)	;
+	
+    commit;
+end;$$;
+
+
+
+
+
+--PROCEDURE TO UPDATE INTO  tblLanguages
+
+create or replace   procedure spUpdatelLanguages
+ (
+newlanID uuid  ,
+newlanName varchar(50)  ,
+newlanDescription varchar(500)  ,
+newlanIsDeleted int  
+)
+ 
+language plpgsql    
+as $$
+begin
+update  tblLanguages set
+lanName =newlanName,
+lanDescription =  newlanDescription,
+lanIsDeleted = newlanIsDeleted
+where lanID= newlanID;
+     commit;
+end;$$;
+
+
+
+
+--PROCEDURE TO UPDATE INTO  tblControls
+create or replace   procedure spUpdatelControls
+ (
+newctrID uuid  ,
+newctrName varchar(50)  ,
+newctrDescription varchar(500)  ,
+newctrIsDeleted int  
+)
+ 
+language plpgsql    
+as $$
+begin
+update  tblControls set
+ctrName =newctrName,
+ctrDescription =newctrDescription,
+ctrIsDeleted =newctrIsDeleted
+where ctrID= newctrID;
+     commit;
+end;$$;
+
+
+
+--PROCEDURE TO UPDATE  INTO  tblControlDisplay
+create or replace   procedure spUpdatelControlDisplay
+ (
+updatedctrddspID uuid  ,
+newctrdspCtrID uuid    ,
+newctrdsplanID uuid   ,
+newctrdspText varchar(250),
+newctrdspIsDeleted int
+)
+ 
+language plpgsql    
+as $$
+begin
+update  tblControlDisplay set
+ctrdspCtrID =newctrdspCtrID,
+ctrdsplanID =newctrdsplanID,
+ctrdspText =newctrdspText,
+ctrdspIsDeleted= newctrdspIsDeleted
+where ctrddspID= updatedctrddspID;
+     commit;
+end;$$;
+
+
+
+
+
+--PROCEDURE TO DELETE  tblLanguages
+
+create or replace   procedure spDeleteLanguages
+ (
+deletelanID uuid 
+)
+ 
+language plpgsql    
+as $$
+begin
+update  tblLanguages set
+lanIsDeleted = 1
+where lanID= deletelanID;
+     commit;
+end;$$;
+
+
+
+
+--PROCEDURE TO DELETE  tblControls
+create or replace   procedure spDeleteControls
+ (
+deletectrID uuid 
+)
+ 
+language plpgsql    
+as $$
+begin
+update  tblControls set
+ctrIsDeleted = 1
+where ctrID= deletectrID;
+     commit;
+end;$$;
+
+
+
+
+
+
+--PROCEDURE TO DELETE  tblControlDisplay
+
+create or replace   procedure spDeleteControlDisplay
+ (
+deletectrddspID uuid 
+)
+ 
+language plpgsql    
+as $$
+begin
+update  tblControlDisplay set
+ctrdspIsDeleted = 1
+where ctrID= deletectrID;
+     commit;
+end;$$;
+
+
+
+
+
+
+-- PROCEDURE TO LIST ALL CONTROLDISPLAY
+create or replace   procedure spShowAllControldisplay()
+
+language plpgsql    
+as $$
+begin
+SELECT 
+d.ctrddspid as ControlDisplayID, 
+d.ctrdspctrid as ControlDisplayControlID, 
+c.ctrname  as ControlsDisplayControlName, 
+d.ctrdsplanid as ControlDisplayLanguageID, 
+l.landescription as ControlDisplayLaguageName, 
+d.ctrdsptext  as ControlDisplayText
+FROM public.tblcontroldisplay d
+left join public.tblcontrols c on c.ctrid=ctrdspctrid
+left join public.tbllanguages l on l.lanid=d.ctrdsplanid
+where d.ctrdspisdeleted=0;
+
+     commit;
+end;$$;
+
+
+-- PROCEDURE TO SHOW SELECTED CONTROLDISPLAY
+create or replace   procedure spShowAllControldisplay( selectedctrddspid uuid)
+
+language plpgsql    
+as $$
+begin
+SELECT 
+d.ctrddspid as ControlDisplayID, 
+d.ctrdspctrid as ControlDisplayControlID, 
+c.ctrname  as ControlsDisplayControlName, 
+d.ctrdsplanid as ControlDisplayLanguageID, 
+l.landescription as ControlDisplayLaguageName, 
+d.ctrdsptext  as ControlDisplayText
+FROM public.tblcontroldisplay d
+left join public.tblcontrols c on c.ctrid=ctrdspctrid
+left join public.tbllanguages l on l.lanid=d.ctrdsplanid
+where d.ctrdspisdeleted=0 and d.ctrddspid =selectedctrddspid;
+
+     commit;
+end;$$;
 
 
 

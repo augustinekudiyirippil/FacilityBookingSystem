@@ -134,3 +134,42 @@ alter table public.tblusers add usrCreatedOn timestamp, add usrLastUpdatedOn tim
 
 
 
+create table tblLanguages
+(
+lanID uuid NOT null primary key,
+lanName varchar(50) not null,
+lanDescription varchar(500) null,
+lanIsDeleted int default 0
+);
+
+
+
+create table tblControls
+(
+ctrID uuid NOT null primary key,
+ctrName varchar(50) not null,
+ctrDescription varchar(500) null,
+ctrIsDeleted int default 0
+);
+
+
+create table tblControlDisplay
+(
+ctrddspID uuid NOT null primary key,
+ctrdspCtrID uuid NOT null ,
+ctrdsplanID uuid NOT null ,
+ctrdspText varchar(250),
+ctrdspIsDeleted int
+
+);
+
+
+
+
+ALTER TABLE public.tblControlDisplay ADD CONSTRAINT tblLanguagesy_lanID_fkey FOREIGN KEY (ctrdsplanID) REFERENCES public.tblLanguages(lanID);
+
+
+
+ALTER TABLE public.tblControlDisplay ADD CONSTRAINT tblControlDisplay_ctrID_fkey FOREIGN KEY (ctrdspCtrID) REFERENCES public.tblControls(ctrID);
+
+
