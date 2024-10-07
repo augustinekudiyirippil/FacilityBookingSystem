@@ -25,5 +25,15 @@ namespace FleetBookingSystemCode.Controllers
             return userrole.GetUserRole(id);
         }
 
+
+        [HttpPost]
+        public ActionResult<UserRoles> addUserRole(UserRoles userRoles)
+        {
+            return userrole.addUserRole(userRoles);
+        }
+
+
+
+
     }
 }

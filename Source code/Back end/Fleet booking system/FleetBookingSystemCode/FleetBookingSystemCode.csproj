@@ -5,7 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Npgsql" Version="8.0.4" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EditorConfigFiles Remove="D:\Augustine\Facility Booking System\Source code\Back end\Fleet booking system\FleetBookingSystemCode\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="D:\Augustine\Facility Booking System\Source code\Back end\Fleet booking system\FleetBookingSystemCode\.editorconfig" />
   </ItemGroup>
 
 </Project>

@@ -7,7 +7,18 @@ namespace FleetBookingSystemCode.Interface
     {
 
 
-        List<UserRoles> GetAllEmployees();
-        UserRoles GetEmployee(int id);
+        List<UserRoles> GetUserRoles();
+        UserRoles GetUserRole(int id);
+
+        UserRoles addUserRole(UserRoles userRole);
+
+        UserRoles deleteUserRole(UserRoles userRole);
+
+        UserRoles updateUserRole(UserRoles userRole);
+
+
+
+
+
     }
 }
