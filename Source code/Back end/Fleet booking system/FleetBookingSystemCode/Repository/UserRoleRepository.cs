@@ -10,8 +10,12 @@ using System.Linq;
 
 namespace FleetBookingSystemCode.Repository
 {
-    public class UserRoleRepository
+    public class UserRoleRepository : IUserRoles
     {
+        public Guid roleid { get; set; }
+        public int rolenumber { get; set; }
+        public string rolename { get; set; }
+
 
         string sqlQuery;
         string sqlConnectionString;
@@ -24,21 +28,16 @@ namespace FleetBookingSystemCode.Repository
         NpgsqlDataReader sqlDataReader;
 
         DataSet ds;
+        List<UserRoles> listUserRoles = new List<UserRoles> { };
 
-        List<UserRoles> listUserRoles = new List<UserRoles>
-        {
-            new UserRoles{  roleid= new Guid( "7AC69D82-8077-4C36-90F9-23563C04D67A"), rolenumber =1, rolename="Admin", roleisdeleted =0},
-            new UserRoles{  roleid= new Guid("76386840-F006-4043-AA05-EDCD67D4D333"), rolenumber =2, rolename="Owner", roleisdeleted =0},
-            new UserRoles{  roleid= new Guid("1C171AB1-9CFE-4C69-ADB5-2ECC608FD39D"), rolenumber =3, rolename="Customer", roleisdeleted =0}
+        string operationResult;
 
-
-        };
         public List<UserRoles> GetAllEUserRoles()
         {
 
-            getUserRoles();
+            return getUserRoles();
 
-            return listUserRoles;
+
         }
 
         public UserRoles GetUserRole(int id)
@@ -47,29 +46,59 @@ namespace FleetBookingSystemCode.Repository
         }
 
 
-      
-        public void getUserRoles()
+
+        public List<UserRoles> getUserRoles()
         {
             DBClass sqlClass = new DBClass();
 
-            // sqlQuery = "SELECT roleid, rolenumber, rolename, roleisdeleted   FROM public.tblroles ";
 
-            sqlDataReader = sqlClass.readSQLDataByProcedure("spSelectAllRoles");
+            sqlDataReader = sqlClass.readSQLData("SELECT * from  fnGetAllUserRoles();");
 
+            while (sqlDataReader.Read())
+            {
 
+                listUserRoles.Add(new UserRoles { roleid = sqlDataReader.GetGuid(0), rolenumber = sqlDataReader.GetInt32("fmRoleNumber"), rolename = sqlDataReader.GetString("fmRoleName") });
 
+            }
 
+            sqlClass.closeSQLConnection();
 
+            return listUserRoles;
 
 
         }
 
-        public UserRoles addUserRole(UserRoles userRoles)
+
+        public List<UserRoles> GetUserRole(Guid id)
         {
-           
             DBClass sqlClass = new DBClass();
 
-            sqlConnectionString=sqlClass.getSQLConnectionString();
+
+            sqlDataReader = sqlClass.readSQLData("SELECT * from  public.fnGetSeletedUserRole('" + id + "');");
+
+            while (sqlDataReader.Read())
+            {
+
+                listUserRoles.Add(new UserRoles { roleid = sqlDataReader.GetGuid(0), rolenumber = sqlDataReader.GetInt32("fmRoleNumber"), rolename = sqlDataReader.GetString("fmRoleName") });
+
+            }
+
+            sqlClass.closeSQLConnection();
+
+            return listUserRoles;
+
+
+        }
+
+
+
+
+        public string addUserRole(string userRoleName)
+        {
+
+            DBClass sqlClass = new DBClass();
+
+            sqlConnectionString = sqlClass.getSQLConnectionString();
 
             try
             {
@@ -80,42 +109,135 @@ namespace FleetBookingSystemCode.Repository
                     sqlConnection.Open();
                 }
 
-                    
-                //sqlCommand.Connection = sqlConnection;
-                //sqlCommand.CommandType = CommandType.StoredProcedure;
-                //sqlCommand.CommandText = "public.spAddRole";
-                //sqlCommand.Parameters.Add("@newrolename", NpgsqlDbType.Varchar, userRoles.rolename);
-              
-
-                
-                
-
 
                 using var cmd = new NpgsqlCommand("CALL spAddRole($1)", sqlConnection);
 
-             
-                cmd.Parameters.AddWithValue("newrolename", NpgsqlDbType.Varchar, userRoles.rolename);
+
+                cmd.Parameters.AddWithValue(userRoleName);
 
                 cmd.ExecuteNonQuery();
 
-               
 
                 sqlConnection.Close();
-                sqlClass.updateTableByProcedure(sqlQuery);
 
+                operationResult = userRoleName;
 
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-
+                operationResult = ex.Message.ToString();
 
             }
 
-            return userRoles;
+            return operationResult;
 
 
         }
 
+
+
+        public string updateUserRole(Guid userRoleID, string  userRolename)
+        {
+
+            DBClass sqlClass = new DBClass();
+
+            sqlConnectionString = sqlClass.getSQLConnectionString();
+
+            try
+            {
+                sqlConnection.ConnectionString = sqlConnectionString;
+                if (sqlConnection.State == ConnectionState.Closed)
+                {
+
+                    sqlConnection.Open();
+                }
+
+
+                using var cmd = new NpgsqlCommand("CALL spupdaterole($1,$2)", sqlConnection);
+
+                cmd.Parameters.AddWithValue(userRoleID);
+
+                cmd.Parameters.AddWithValue(userRolename);
+
+                cmd.ExecuteNonQuery();
+
+
+                sqlConnection.Close();
+
+                operationResult = userRolename;
+
+
+            }
+            catch (Exception ex)
+            {
+                operationResult = ex.Message.ToString();
+
+            }
+
+            return operationResult;
+
+
+        }
+
+
+        public string deleteUserRole(Guid userRoleID)
+        {
+
+            DBClass sqlClass = new DBClass();
+
+            sqlConnectionString = sqlClass.getSQLConnectionString();
+
+            try
+            {
+                sqlConnection.ConnectionString = sqlConnectionString;
+                if (sqlConnection.State == ConnectionState.Closed)
+                {
+
+                    sqlConnection.Open();
+                }
+
+
+                using var cmd = new NpgsqlCommand("CALL deleteUserRole($1)", sqlConnection);
+
+                cmd.Parameters.AddWithValue(userRoleID);
+
+               
+
+                cmd.ExecuteNonQuery();
+
+
+                sqlConnection.Close();
+
+                operationResult = "Selected role deleted";
+
+
+            }
+            catch (Exception ex)
+            {
+                operationResult = ex.Message.ToString();
+
+            }
+
+            return operationResult;
+
+
+        }
+
+        public List<UserRoles> GetUserRoles()
+        {
+            throw new NotImplementedException();
+        }
+
+        UserRoles IUserRoles.deleteUserRole(Guid id)
+        {
+            throw new NotImplementedException();
+        }
     }
+
+
+
+
+
 }
+

@@ -1,0 +1,155 @@
+
+CREATE OR REPLACE FUNCTION public.fnGetAllUserRoles()
+    RETURNS TABLE(frRoleID uuid, fmRoleNumber int,  fmRoleName character varying) 
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+    ROWS 1000
+    
+AS $BODY$  
+ DECLARE
+
+BEGIN
+ RETURN QUERY
+SELECT roleid, rolenumber, rolename
+FROM public.tblroles where roleisdeleted=0;
+END;
+$BODY$;
+
+ALTER FUNCTION public.fnGetAllUserRoles()
+OWNER TO Postgres;
+
+
+SELECT public.fnGetAllUserRoles();
+
+
+SELECT * from  fnGetAllUserRoles();
+
+ 
+
+CREATE OR REPLACE FUNCTION public.fnGetSeletedUserRole(selectedRoleID UUID)
+    RETURNS TABLE(frRoleID uuid, fmRoleNumber int,  fmRoleName character varying) 
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+    ROWS 1000
+    
+AS $BODY$  
+ DECLARE
+
+BEGIN
+ RETURN QUERY
+SELECT roleid, rolenumber, rolename
+FROM public.tblroles where roleisdeleted=0 and roleid=selectedRoleID;
+END;
+$BODY$;
+
+ALTER FUNCTION public.fnGetSeletedUserRole(selectedRoleID UUID)
+OWNER TO Postgres;
+
+
+
+select * from public.fnGetSeletedUserRole('68419044-9103-439c-a3de-033cc8ba45b3');
+
+
+
+CREATE OR REPLACE FUNCTION public.fnGetAllUserAccount()
+    RETURNS TABLE(
+     fmusrid uuid,
+	 fmusrnumber int,
+	 fmusrfirstname character varying,
+	 fmusrlastname character varying,
+	 fmusrknownas character varying,
+	 fmusraddress character varying,
+	 fmusrprimaryemail character varying,
+	 fmusrsecondaryemail character varying,
+	 fmusrmobile character varying,
+	 fmusrwhatsapp character varying,
+	 fmusrlandphone  character varying,
+	 fmusrmfaactivated int,
+	 fmusrssoactivated int,
+	 fmusrnotes character varying,
+	 fmusrisdeleted int,
+	 fmusrroledid uuid  ,
+	 fmusrcreatedon timestamp  ,
+	 fmusrlastupdatedon timestamp  ,
+	 fmusrcomments character varying 
+    ) 
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+    ROWS 1000
+    
+AS $BODY$  
+ DECLARE
+
+BEGIN
+ RETURN QUERY
+SELECT usrid, usrnumber, usrfirstname, usrlastname, usrknownas, 
+usraddress, usrprimaryemail, usrsecondaryemail, usrmobile, 
+usrwhatsapp, usrlandphone, usrmfaactivated, usrssoactivated, 
+usrnotes, usrisdeleted, usrroledid, usrcreatedon, usrlastupdatedon, usrcomments
+FROM public.tblusers where  usrisdeleted=0;
+END;
+$BODY$;
+
+ALTER FUNCTION public.fnGetAllUserAccount()
+OWNER TO Postgres;
+
+
+SELECT public.fnGetAllUserAccount();
+
+
+SELECT * from  fnGetAllUserAccount();
+
+
+
+
+CREATE OR REPLACE FUNCTION public.fnGetSelectedUserAccount(selectedUserID UUID)
+    RETURNS TABLE(
+     fmusrid uuid,
+	 fmusrnumber int,
+	 fmusrfirstname character varying,
+	 fmusrlastname character varying,
+	 fmusrknownas character varying,
+	 fmusraddress character varying,
+	 fmusrprimaryemail character varying,
+	 fmusrsecondaryemail character varying,
+	 fmusrmobile character varying,
+	 fmusrwhatsapp character varying,
+	 fmusrlandphone  character varying,
+	 fmusrmfaactivated int,
+	 fmusrssoactivated int,
+	 fmusrnotes character varying,
+	 fmusrisdeleted int,
+	 fmusrroledid uuid  ,
+	 fmusrcreatedon timestamp  ,
+	 fmusrlastupdatedon timestamp  ,
+	 fmusrcomments character varying 
+    ) 
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+    ROWS 1000
+    
+AS $BODY$  
+ DECLARE
+
+BEGIN
+ RETURN QUERY
+SELECT usrid, usrnumber, usrfirstname, usrlastname, usrknownas, 
+usraddress, usrprimaryemail, usrsecondaryemail, usrmobile, 
+usrwhatsapp, usrlandphone, usrmfaactivated, usrssoactivated, 
+usrnotes, usrisdeleted, usrroledid, usrcreatedon, usrlastupdatedon, usrcomments
+FROM public.tblusers where  usrisdeleted=0 and usrid=selectedUserID;
+END;
+$BODY$;
+
+ALTER FUNCTION public.fnGetSelectedUserAccount(selectedUserID UUID)
+OWNER TO Postgres;
+
+

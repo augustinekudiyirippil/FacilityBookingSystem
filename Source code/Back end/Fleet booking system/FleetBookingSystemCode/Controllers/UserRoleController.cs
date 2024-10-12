@@ -1,6 +1,7 @@
 ﻿using FleetBookingSystemCode.Model;
 using FleetBookingSystemCode.Repository;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
 namespace FleetBookingSystemCode.Controllers
@@ -19,19 +20,32 @@ namespace FleetBookingSystemCode.Controllers
             return userrole.GetAllEUserRoles();
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<UserRoles> GetUserRole(int id)
+        [HttpGet("{RoleID}")]
+        public ActionResult<IEnumerable<UserRoles>>  GetUserRole(Guid RoleID)
         {
-            return userrole.GetUserRole(id);
+            return userrole.GetUserRole(RoleID);
         }
 
 
         [HttpPost]
-        public ActionResult<UserRoles> addUserRole(UserRoles userRoles)
+        public string addUserRole(string userRoleName)
         {
-            return userrole.addUserRole(userRoles);
+            return userrole.addUserRole(userRoleName);
         }
 
+
+        [HttpPut]
+        public string updateUserRole(Guid UserRoleID, string UserRolename)
+        {
+            return userrole.updateUserRole(  UserRoleID,    UserRolename);
+        }
+
+
+        [HttpDelete]
+        public string deleteUserRole(Guid UserRoleID)
+        {
+            return userrole.deleteUserRole(UserRoleID);
+        }
 
 
 

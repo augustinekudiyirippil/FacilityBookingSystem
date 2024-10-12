@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using FleetBookingSystemCode.Model;
 
 namespace FleetBookingSystemCode.Interface
@@ -8,15 +9,13 @@ namespace FleetBookingSystemCode.Interface
 
 
         List<UserRoles> GetUserRoles();
-        UserRoles GetUserRole(int id);
+        List<UserRoles> GetUserRole(Guid id);
 
-        UserRoles addUserRole(UserRoles userRole);
+        string addUserRole(string userRoleName);
 
-        UserRoles deleteUserRole(UserRoles userRole);
+        UserRoles deleteUserRole(Guid id);
 
-        UserRoles updateUserRole(UserRoles userRole);
-
-
+        string updateUserRole(Guid UserRoleID, string UserRolename);
 
 
 

@@ -43,8 +43,7 @@ namespace FleetBookingSystemCode.DBOperations
 
                 //Connect to database
                 sqlConnection.ConnectionString = postgreSQLConnectionstring; 
-                //"Server=" + sqlServer + "; Port=" + sqlPort + "; User Id=" + sqlUserName + "; Password=" + sqlPassword + "; Database=" + sqlDatabase;
-
+               
 
                 sqlCommand.Connection = sqlConnection;
 
@@ -112,7 +111,7 @@ namespace FleetBookingSystemCode.DBOperations
 
 
 
-        public string  readSQLData(string strSQLCommand)
+        public NpgsqlDataReader readSQLData(string strSQLCommand)
         {
             try
             {
@@ -126,7 +125,7 @@ namespace FleetBookingSystemCode.DBOperations
                 sqlCommand.CommandText = strSQLCommand;
                 sqlDataReader = sqlCommand.ExecuteReader();
 
-                closeSQLConnection();
+                //closeSQLConnection();
                 successMessage = "Success";
 
             }
@@ -137,7 +136,7 @@ namespace FleetBookingSystemCode.DBOperations
 
             }
 
-            return successMessage;
+            return sqlDataReader;
         }
 
 
